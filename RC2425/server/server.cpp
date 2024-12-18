@@ -696,8 +696,8 @@ void Server::handle_quit(char *message){
         return;
     }
     auto resultTime = parsers::getTime(1);
-    time_t sec_needed = resultTime.first - it->start_sec;
-    if (sec_needed <= 0){
+    time_t sec_left = it->start_sec + it->max_playtime - resultTime.first;
+    if (sec_left <= 0){
         it->gameStatus == NONGAME;
         char destinationFile[MAX_PATHNAME] = {'\0'};
         char destinationDir[MAX_DIRNAME];
