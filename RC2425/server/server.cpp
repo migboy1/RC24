@@ -701,6 +701,7 @@ void Server::handle_dbug(char *message){
     sprintf(playerfilepath, "GAMES/GAME_%d.txt", PLID); 
     FILE * playerfile = fopen(playerfilepath, "w");
     if (it == user_list.end()){
+        printf("haha\n");
         USERLIST new_user = {PLID, secret_key, 01, resultTime.first, std::vector<std::string>(8, "") , max_playtime, ONGAME, "P", "", "", ""};
         strncpy(new_user.destinationfile, playerfilepath, MAX_PATHNAME);
         new_user.destinationfile[MAX_PATHNAME - 1] = '\0';
@@ -713,8 +714,8 @@ void Server::handle_dbug(char *message){
         fclose(playerfile);
         return;
     }
+
     std::cout << it->gameStatus << std::endl;
-    
     if (it->gameStatus == NONGAME){
         it->secret_key = secret_key;
         it->n_trial = 1;
