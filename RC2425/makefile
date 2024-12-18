@@ -20,3 +20,5 @@ utils.o: utils.cpp utils.hpp const.hpp
 
 clean:
 	rm -f player GS *.o
+	rmdir -r SCORES
+	rmdir -r GAMES
