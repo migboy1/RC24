@@ -1,0 +1,16 @@
+IP: 127.0.0.1
+PORT: 58001
+please insert the command: ggood
+RDB ERR
+
+Error! Please check the format of insert
+please insert the command: RTR ERR
+The syntax of message was incorrect! Please try again!
+please insert the command: please insert the command: RTR ERR
+The syntax of message was incorrect! Please try again!
+please insert the command: please insert the command: RTR ERR
+The syntax of message was incorrect! Please try again!
+please insert the command: Timeout. 1 out of 3 tries completed.
+Timeout. 2 out of 3 tries completed.
+Timeout. 3 out of 3 tries completed.
+Message can not receive from serverDeleted: ./client/STATE_134434.txt
