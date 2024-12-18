@@ -383,7 +383,7 @@ void User::Debug(string input){
 
     iss >> command >> id >> max_playtime >> guess1 >> guess2 >> guess3 >> guess4;
 
-    message = "DBG" + string(" ") + to_string(id) + " " + to_string(max_playtime) + " " + guess1 + " " +  guess2 + " " + guess3 + " " + guess4 + "\n";
+    message = "DBG " + to_string(id) + " " + to_string(max_playtime) + " " + guess1 + " " +  guess2 + " " + guess3 + " " + guess4 + "\n";
 
     // send and receive messages from UDP
     if(sendUDP(socketUDP, message) == FAIL){
