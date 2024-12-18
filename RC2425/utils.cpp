@@ -248,8 +248,10 @@ namespace protocols{
             buffer = command + " " + status + "\n";
         }
         else if(status == ENT || status == ETM){
-            char s1, s2, s3, s4;
-            sscanf(secret_key.c_str(), "%c%c%c%c", &s1, &s2, &s3, &s4);
+            char s1 = secret_key[0];
+            char s2 = secret_key[1];
+            char s3 = secret_key[2];
+            char s4 = secret_key[3];
             buffer = command + " " + status + " " + s1  + " " + s2 + " " + s3 + " " + s4 + "\n";
         }
 
