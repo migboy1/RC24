@@ -256,7 +256,7 @@ void Server::handle_request_TCP(char *message, int client_fd) {
 
 /*DONE*/
 void Server::handle_start(char *message){
-    std::cout << message << std::endl;
+    std::cout << message;
 
     std::string command;
     int PLID, max_playtime;
@@ -655,7 +655,7 @@ void Server::handle_quit(char *message){
         return;
     }
     if (it->gameStatus == ONGAME){
-        it->gameStatus == NONGAME;
+        it->gameStatus = NONGAME;
         it->finishStatus = QUIT;
         char destinationFile[MAX_PATHNAME] = {'\0'};
         auto resultTime = parsers::getTime(1);
@@ -701,7 +701,7 @@ void Server::handle_dbug(char *message){
     sprintf(playerfilepath, "GAMES/GAME_%d.txt", PLID); 
     FILE * playerfile = fopen(playerfilepath, "w");
     if (it == user_list.end()){
-        USERLIST new_user = {PLID, secret_key, 01, resultTime.first, std::vector<std::string>(8, "") , max_playtime, ONGAME, "P", ""};
+        USERLIST new_user = {PLID, secret_key, 01, resultTime.first, std::vector<std::string>(8, "") , max_playtime, ONGAME, "P", "", "", ""};
         strncpy(new_user.destinationfile, playerfilepath, MAX_PATHNAME);
         new_user.destinationfile[MAX_PATHNAME - 1] = '\0';
         user_list.push_back(new_user);
@@ -713,6 +713,7 @@ void Server::handle_dbug(char *message){
         fclose(playerfile);
         return;
     }
+    std::cout << it->gameStatus << std::endl;
     if (it->gameStatus == NONGAME){
         it->secret_key = secret_key;
         it->n_trial = 1;

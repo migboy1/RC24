@@ -99,7 +99,7 @@ void User::Start(string input){
     if (iss >> std::ws && iss.eof()){
         _maxTime = to_string(max_playtime);
 
-        message = "SNG" + string(" ") +  to_string(PLID) + " " + _maxTime + "\n";
+        message = "SNG " +  to_string(PLID) + " " + _maxTime + "\n";
 
         if(sendUDP(socketUDP, message) == FAIL){
             printf("Message can not send to server\n");
