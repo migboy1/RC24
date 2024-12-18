@@ -19,8 +19,6 @@
 #define MAX_FILENAME 24
 #define MAX_SECRET_SIZE 5
 
-#define MAX_STRING_UDP 128
-
 #define MAX_FILES 10
 
 #define MODE_PLAY 1

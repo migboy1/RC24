@@ -1,10 +1,9 @@
 #include "utils.hpp"
 #include "const.hpp"
 
-using namespace std;
 
 namespace parsers{
-    pair<int, int> parse_nB_nW(string user_secret_key, string guess_secret_key){
+    std::pair<int, int> parse_nB_nW(std::string user_secret_key, std::string guess_secret_key){
         int nB = 0; 
         int nW = 0; 
 
@@ -36,7 +35,7 @@ namespace parsers{
         return {nB, nW};
     }
 
-    pair<time_t, string> getTime(int options){ /*int stands for fulltime, char stands for time_str*/
+    std::pair<time_t, std::string> getTime(int options){ /*int stands for fulltime, char stands for time_str*/
         time_t fulltime;
         struct tm *current_time;
         char time_str[20];
@@ -54,13 +53,13 @@ namespace parsers{
                 current_time->tm_hour, current_time->tm_min, current_time->tm_sec);
         }
 
-        return {fulltime, string(time_str)};
+        return {fulltime, std::string(time_str)};
     }
     
-    string random_secretkey(){
-        const vector<char> colors = {'R', 'G', 'B', 'Y', 'O', 'P'};
+    std::string random_secretkey(){
+        const std::vector<char> colors = {'R', 'G', 'B', 'Y', 'O', 'P'};
         const int keylength = 4;
-        string secret_key;
+        std::string secret_key;
 
         srand(time(0));
 
@@ -100,7 +99,7 @@ namespace parsers{
 } 
 
 namespace protocols{
-    int sendUDP(SOCKET *s, string message) {
+    int sendUDP(SOCKET *s, std::string message) {
         if (!strcmp(s->owner, USER)) {
             if (sendto(s->fd, message.c_str(), message.length(), 0, s->res->ai_addr, s->res->ai_addrlen) == -1) {
                 perror("sendto failed");
@@ -116,7 +115,7 @@ namespace protocols{
         return SUCCESS;
     }
 
-    int sendTCP(SOCKET * s, string message, int nbytes){
+    int sendTCP(SOCKET * s, std::string message, int nbytes){
         ssize_t nleft, n;
         int nwritten = 0;
         char * ptr, buffer[MAX_BUFF_SIZE];
@@ -136,7 +135,7 @@ namespace protocols{
         return nwritten;
     }
 
-    int sendTCP_SERVER(int clientfd, string message, int nbytes){
+    int sendTCP_SERVER(int clientfd, std::string message, int nbytes){
         ssize_t nleft, n;
         int nwritten = 0;
         char * ptr, buffer[2048];
@@ -176,7 +175,7 @@ namespace protocols{
                 perror("select failed");
                 exit(EXIT_FAILURE);
             } else {
-                int bytes_received = recvfrom(s->fd, message, MAX_STRING_UDP, 0, (struct sockaddr *)&s->addr, &addrlen);
+                int bytes_received = recvfrom(s->fd, message, MAX_ANSWER_SIZE, 0, (struct sockaddr *)&s->addr, &addrlen);
 
                 if (bytes_received == -1) {
                     perror("recvfrom failed");
@@ -211,8 +210,8 @@ namespace protocols{
         return nread;
     }
 
-    int sendstatusUDP_START(SOCKET * s, string command, string status){
-        string buffer;
+    int sendstatusUDP_START(SOCKET * s, std::string command, std::string status){
+        std::string buffer;
         if(status == ERR){
             buffer = status + "\n";
         }else{
@@ -226,8 +225,8 @@ namespace protocols{
         return SUCCESS;
     }
 
-    int sendstatusUDP_DBUG(SOCKET * s, string command, string status){
-        string buffer;
+    int sendstatusUDP_DBUG(SOCKET * s, std::string command, std::string status){
+        std::string buffer;
             buffer = command + " " + status + "\n";
 
         if(sendUDP(s, buffer) == FAIL){
@@ -237,10 +236,10 @@ namespace protocols{
         return SUCCESS;
     }
 
-    int sendstatusUDP_TRY(SOCKET * s, string command, string status,int n_trial, int nB, int nW, string secret_key){
-        string buffer;
+    int sendstatusUDP_TRY(SOCKET * s, std::string command, std::string status,int n_trial, int nB, int nW, std::string secret_key){
+        std::string buffer;
         if(status == OK){
-            buffer = command + " " + OK + " " + to_string(n_trial) + " " + to_string(nB) + " " + to_string(nW) + "\n";
+            buffer = command + " " + OK + " " + std::to_string(n_trial) + " " + std::to_string(nB) + " " + std::to_string(nW) + "\n";
             printf("%s\n", buffer.c_str());
         }
 
@@ -262,8 +261,8 @@ namespace protocols{
         return SUCCESS;
     }
 
-    int sendstatusUDP_QUIT(SOCKET * s, string command, string status, string secret_key){
-        string buffer;
+    int sendstatusUDP_QUIT(SOCKET * s, std::string command, std::string status, std::string secret_key){
+        std::string buffer;
         char s1 = secret_key[0];
         char s2 = secret_key[1];
         char s3 = secret_key[2];
@@ -286,8 +285,8 @@ namespace protocols{
         return SUCCESS;
     }
 
-    int sendstatusTCP_ST(int clientfd, string command, string status, char *summaryFilePath, char * summaryFileName) {
-        string buffer;
+    int sendstatusTCP_ST(int clientfd, std::string command, std::string status, char *summaryFilePath, char * summaryFileName) {
+        std::string buffer;
         if (status == ERR || status == NOK) {
             buffer =command + " " + status + "\n";
             if (sendTCP_SERVER(clientfd, buffer, buffer.length()) == FAIL){
@@ -304,12 +303,12 @@ namespace protocols{
         long fileSize = ftell(file);
         fseek(file, 0, SEEK_SET);
 
-        string buffer_file(fileSize, '\0');
+        std::string buffer_file(fileSize, '\0');
         fread(&buffer_file[0], 1, fileSize, file);
 
         fclose(file);
 
-        buffer = command + " " + status + " "+ summaryFileName + " " + to_string(fileStat.st_size)  + " " + buffer_file +  "\n";
+        buffer = command + " " + status + " "+ summaryFileName + " " + std::to_string(fileStat.st_size)  + " " + buffer_file +  "\n";
         std::cout << buffer;
 
         if (sendTCP_SERVER(clientfd, buffer, buffer.length()) == FAIL){
@@ -319,8 +318,8 @@ namespace protocols{
         return SUCCESS;
     }
 
-    int sendstatusTCP_SB(int clientfd, string command, string status, char *scoreFilePath, char * scoreFileName){
-        string buffer;
+    int sendstatusTCP_SB(int clientfd, std::string command, std::string status, char *scoreFilePath, char * scoreFileName){
+        std::string buffer;
         struct stat fileStat;
         stat(scoreFilePath, &fileStat);
         if (status == EMPTY) {
@@ -332,11 +331,11 @@ namespace protocols{
             long fileSize = ftell(file);
             fseek(file, 0, SEEK_SET);
 
-            string buffer_file(fileSize, '\0');
+            std::string buffer_file(fileSize, '\0');
             fread(&buffer_file[0], 1, fileSize, file);
 
             fclose(file);
-            buffer = command + " " + status + " "+ scoreFileName + " " + to_string(fileStat.st_size) +  " " + buffer_file + "\n";
+            buffer = command + " " + status + " "+ scoreFileName + " " + std::to_string(fileStat.st_size) +  " " + buffer_file + "\n";
         }
         if (sendTCP_SERVER(clientfd, buffer, buffer.length()) == FAIL){
             return FAIL;

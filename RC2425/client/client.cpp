@@ -146,12 +146,12 @@ void User::Try(string input) {
     std::istringstream iss(input);
 
     iss >> command >> guess1 >> guess2 >> guess3 >> guess4;
-
+    
     if (iss >> std::ws && iss.eof()){
         if (try_time <= 8){
             try_time += 1;
             message = "TRY" + string(" ") + _uid + " " + string(guess1) + " " + string(guess2) + " " + string(guess3) + " " + string(guess4) + " " + to_string(try_time) + "\n";
-
+            std::cout << message;
             if(sendUDP(socketUDP, message) == FAIL){
                 printf("Message can not send to server");
                 return;
@@ -161,7 +161,7 @@ void User::Try(string input) {
                 printf("Message can not receive from server");
                 return;
             }
-            
+            std::cout << answer;
             std::istringstream iss(answer);
 
             std::string r_command, r_status;
@@ -197,7 +197,6 @@ void User::Try(string input) {
                     string secret1, secret2, secret3, secret4;
                     iss >> secret1 >> secret2 >> secret3 >> secret4;
                     printf("The time is over, the game will finish and the secret key is %s %s %s %s\n", secret1.c_str(), secret2.c_str(), secret3.c_str(), secret4.c_str());
-                    
                 }
                 else if(r_status == ERR){
                     try_time -= 1;

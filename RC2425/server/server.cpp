@@ -11,6 +11,8 @@ Server::Server(int argc, char** argv){
     initialize_connection();
 
     receiveRequest();
+
+    terminate();
 }
 
 void Server::parse_arguments(int argc, char** argv){
@@ -46,6 +48,35 @@ void Server::parse_arguments(int argc, char** argv){
 void Server::initialize_connection(){
     connectUDP(m_dsport);
     connectTCP(m_dsport);
+}
+
+void Server::print_verbose(SOCKET * s, std::string request, std::string PLID){
+    std::string clientip = get_clientIPv4(s);
+    std::string clientport = get_clientport(s);
+
+    fprintf(stdout, "Request from %s in port %s: ", clientip.c_str(), clientport.c_str());
+    fprintf(stdout, "%s ", request.c_str());
+    if (!PLID.empty()){
+        fprintf(stdout, "%s ", PLID.c_str());
+    }
+    if (!request.empty()){
+        fprintf(stdout, "%s ", request.c_str());
+    }
+    fprintf(stdout, "\n");
+}
+
+std::string Server::get_clientIPv4(SOCKET * s){
+    struct in_addr *addr;
+    char buffer[INET_ADDRSTRLEN];
+    addr =  &((s->addr).sin_addr);
+    
+    inet_ntop(AF_INET,addr,buffer,sizeof buffer);
+
+    return std::string(buffer);
+}
+
+std::string Server::get_clientport(SOCKET * s){
+    return std::to_string(ntohs((s->addr).sin_port));
 }
 
 void Server::connectUDP(std::string port) {
@@ -210,15 +241,8 @@ void Server::receiveRequest() {
                     }
 
                     int ret = read(client_fd, buffer, MAX_BUFF_SIZE);
-                    if (ret > 0) {
-                        buffer[ret] = '\0'; // Null-terminate the std::string
-                        std::cout << "[TCP] Received message: " << buffer << std::endl;
-                        handle_request_TCP(buffer, client_fd);
-                    } else if (ret == 0) {
-                        std::cout << "[TCP] Client disconnected" << std::endl;
-                    } else {
-                        perror("recv");
-                    }
+                    buffer[ret] = '\0'; // Null-terminate the std::string
+                    handle_request_TCP(buffer, client_fd);
                     close(client_fd);
                 }
         }
@@ -250,19 +274,19 @@ void Server::handle_request_TCP(char *message, int client_fd) {
     if (command == USER_COMMAND_SHOW_STIALS) {
         handle_showtrails(message, client_fd);
     } else if (command == USER_COMMAND_SCOREBOARD) {
-        handle_scoreboard(client_fd);
+        handle_scoreboard(message, client_fd);
     }
 }
 
 /*DONE*/
 void Server::handle_start(char *message){
-    std::cout << message;
 
     std::string command;
     int PLID, max_playtime;
     std::istringstream iss(message);
 
     iss >> command >> PLID >> max_playtime;
+    if (m_verbose) print_verbose(socketUDP, command, std::to_string(PLID));
 
     if(!checkers::check_PLID(PLID) || !checkers::check_maxtime(max_playtime)){
         protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, ERR);
@@ -342,6 +366,8 @@ void Server::handle_try(char * message){
     std::istringstream iss(message);
 
     iss >> command >> PLID >> secret1 >> secret2 >> secret3 >> secret4 >> n_trial;
+
+    if (m_verbose) print_verbose(socketUDP, command, std::to_string(PLID));
 
     if (checkers::check_secretkey(secret1, secret2, secret3, secret4) == 0){
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, ERR, 0, 0, 0, "");
@@ -490,9 +516,13 @@ void Server::score_dir(int PLID, int n_trial, std::string time_str, std::string 
 }
 
 void Server::handle_showtrails(char *message, int client_fd){
-    printf("%s\n", message);
     int PLID;
-    sscanf(message,"STR %d", &PLID);
+    std::string command;
+    std::istringstream iss(message);
+
+    iss >> command >> PLID;
+    if (m_verbose) print_verbose(socketUDP, command, std::to_string(PLID));
+
     auto it = find_if(user_list.begin(), user_list.end(), [PLID](const USERLIST& user){
         return user.PLID == PLID;
     });
@@ -605,7 +635,13 @@ void Server::handle_showtrails(char *message, int client_fd){
     }
 }
 
-void Server::handle_scoreboard(int client_fd){
+void Server::handle_scoreboard(char *message, int client_fd){
+    std::string command;
+    std::istringstream iss(message);
+
+    iss >> command;
+    if (m_verbose) print_verbose(socketUDP, command, "");
+
     SCORELIST scores;
     memset(&scores, 0, sizeof(SCORELIST));
     int n_result = FindTopScores(&scores);
@@ -645,10 +681,12 @@ void Server::handle_scoreboard(int client_fd){
 }
 
 void Server::handle_quit(char *message){
-    printf("%s\n", message);
     int PLID;
+    std::string command;
+    std::istringstream iss(message);
 
-    sscanf(message, "QUT %d", &PLID);
+    iss >> command >> PLID;
+    if (m_verbose) print_verbose(socketUDP, command, std::to_string(PLID));
 
     auto it = find_if(user_list.begin(), user_list.end(), [PLID](const USERLIST& user){
         return user.PLID == PLID;
@@ -699,7 +737,6 @@ void Server::handle_quit(char *message){
 }
 
 void Server::handle_dbug(char *message){
-    std::cout << message << std::endl;
     int PLID, max_playtime;
     std::string command, s1, s2, s3, s4;
 
@@ -707,6 +744,8 @@ void Server::handle_dbug(char *message){
 
     iss >> command >> PLID >> max_playtime >> s1 >> s2 >> s3 >> s4;
 
+
+    if (m_verbose) print_verbose(socketUDP, command, std::to_string(PLID));
     
     if(!checkers::check_maxtime(max_playtime) || !checkers::check_PLID(PLID) || !checkers::check_secretkey(s1, s2, s3, s4)){
         protocols::sendstatusUDP_DBUG(socketUDP, SERVER_COMMAND_DEBUG, ERR);

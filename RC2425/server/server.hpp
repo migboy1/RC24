@@ -43,7 +43,6 @@ class Server{
         std::string restartGame; //YES, NO  --For start 2 time of same PLID
     } USERLIST;
 
-
     typedef struct scorelist{
         int score[MAX_FILES];
         char PLID[MAX_FILES][50];
@@ -65,6 +64,9 @@ public:
 private:
     void parse_arguments(int argc, char** argv);
     void initialize_connection();
+    void print_verbose(SOCKET * s, std::string request, std::string uid);
+    std::string get_clientIPv4(SOCKET * s);
+    std::string get_clientport(SOCKET * s);
     void connectUDP(std::string port);
     void connectTCP(std::string port);
 
@@ -82,7 +84,7 @@ private:
     void handle_try(char * message);
     void score_dir(int PLID, int n_trial, std::string time_str, std::string secret_key, std::string mode);
     void handle_showtrails(char *message, int client_fd);
-    void handle_scoreboard(int client_fd);
+    void handle_scoreboard(char *message, int client_fd);
     void handle_quit(char *message);
     void handle_dbug(char *message);
     int FindTopScores(SCORELIST *list);
