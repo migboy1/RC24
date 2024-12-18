@@ -284,7 +284,12 @@ void Server::handle_start(char *message){
             return;
         }
     }
-    
+
+    char destinationDir[MAX_DIRNAME];
+    sprintf(destinationDir, "./GAMES");
+    if (!exists(destinationDir)) {
+        create_dir(destinationDir);
+    }
     /*Create the file GAMES/GAME_(PLID).txt */
     char playerfilepath[MAX_PATHNAME] = {'\0'};
     sprintf(playerfilepath, "GAMES/GAME_%d.txt", PLID); 
@@ -470,6 +475,12 @@ void Server::handle_try(char * message){
 void Server::score_dir(int PLID, int n_trial, std::string time_str, std::string secret_key, std::string mode){
     char destinationfile[MAX_PATHNAME] = {"\0"};
     int score = 100 - (8 * (n_trial - 1));
+
+    char destinationDir[MAX_DIRNAME];
+    sprintf(destinationDir, "./SCORES");
+    if (!exists(destinationDir)) {
+        create_dir(destinationDir);
+    }
     sprintf(destinationfile, "SCORES/%03d_%d_%s.txt",score, PLID, time_str.c_str());
     char buffer[MAX_BUFF_SIZE] = {"\0"};
     sprintf(buffer, "%03d %d %s %d %s", score, PLID, secret_key.c_str(), n_trial, mode.c_str());
@@ -502,6 +513,12 @@ void Server::handle_showtrails(char *message, int client_fd){
     int  year, month, day, hour, min, sec, nB, nW, used_sec, fulltime;
     time_t max_playtime;
 
+    char destinationDir[MAX_DIRNAME];
+    sprintf(destinationDir, "./STATE");
+    if (!exists(destinationDir)) {
+        create_dir(destinationDir);
+    }
+    
     /* CREAT SUMMARY FILE TO PLAYER*/
     char summaryFilePath[MAX_PATHNAME] = {'\0'};
     char summaryFileName[MAX_FILENAME] = {'\0'};
