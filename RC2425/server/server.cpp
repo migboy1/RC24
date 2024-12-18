@@ -656,7 +656,7 @@ void Server::handle_quit(char *message){
         sprintf(destinationFile, "GAMES/%s/%s_T.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
         rename(it->destinationfile, destinationFile);
         strcmp(it->destinationfile, destinationFile);
-        protocols::sendstatusUDP_QUIT(socketUDP, SERVER_COMMAND_QUIT, ERR, "");
+        protocols::sendstatusUDP_QUIT(socketUDP, SERVER_COMMAND_QUIT, NOK, "");
         return;
     }
     if (it->gameStatus == ONGAME){
@@ -691,8 +691,7 @@ void Server::handle_dbug(char *message){
 
     iss >> command >> PLID >> max_playtime >> s1 >> s2 >> s3 >> s4;
 
-
-    if(!checkers::check_maxtime(max_playtime) || !checkers::check_PLID(PLID) || !checkers::check_secretkey(s1, s2, s3, s4) ){
+    if(!checkers::check_maxtime(max_playtime) || !checkers::check_PLID(PLID) || !checkers::check_secretkey(s1, s2, s3, s4)){
         protocols::sendstatusUDP_DBUG(socketUDP, SERVER_COMMAND_DEBUG, ERR);
         return;
     }
@@ -737,7 +736,7 @@ void Server::handle_dbug(char *message){
         fclose(playerfile);
         return;
     }
-    else{
+    else if (it->gameStatus == ONGAME){
         protocols::sendstatusUDP_DBUG(socketUDP, SERVER_COMMAND_DEBUG, NOK);
         fclose(playerfile);
         return;
