@@ -666,6 +666,7 @@ void Server::handle_quit(char *message){
 }
 
 void Server::handle_dbug(char *message){
+    std::cout << message << std::endl;
     int PLID, max_playtime;
     std::string command, s1, s2, s3, s4;
 
