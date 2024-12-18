@@ -10,7 +10,7 @@ user: client/client.cpp utils.o
 	$(CC) $(CFLAGS) -o player client/client.cpp utils.o
 
 server: server/server.cpp utils.o
-	$(CC) $(CFLAGS) -o DS server/server.cpp utils.o
+	$(CC) $(CFLAGS) -o GS server/server.cpp utils.o
 
 utils.o: utils.cpp const.hpp
 	$(CC) $(CFLAGS) -c -o utils.o utils.cpp
