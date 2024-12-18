@@ -374,7 +374,7 @@ void Server::handle_try(char * message){
     /*Find the nB and nW */
     auto result = parsers::parse_nB_nW(it->secret_key, guess_secret_key); 
 
-    std::cout << it->n_trial-1 << n_trial << it->last_secret_keys[n_trial - 1] << guess_secret_key <<std::endl;
+    // std::cout << it->n_trial-1 << n_trial << it->last_secret_keys[n_trial - 1] << guess_secret_key <<std::endl;
     if ((it->n_trial - 1 == n_trial) && it->last_secret_keys[n_trial - 1] == guess_secret_key){
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, OK, n_trial, result.first , result.second, "");
         return;
@@ -640,6 +640,23 @@ void Server::handle_quit(char *message){
     });
 
     if (it == user_list.end()){
+        return;
+    }
+    auto resultTime = parsers::getTime(1);
+    time_t sec_needed = resultTime.first - it->start_sec;
+    if (sec_needed <= 0){
+        it->gameStatus == NONGAME;
+        char destinationFile[MAX_PATHNAME] = {'\0'};
+        char destinationDir[MAX_DIRNAME];
+        sprintf(destinationDir, "GAMES/%d",PLID);
+        if (!exists(destinationDir)) {
+            create_dir(destinationDir);
+        }
+        it->finishStatus = TIMEOUT;
+        sprintf(destinationFile, "GAMES/%s/%s_T.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
+        rename(it->destinationfile, destinationFile);
+        strcmp(it->destinationfile, destinationFile);
+        protocols::sendstatusUDP_QUIT(socketUDP, SERVER_COMMAND_QUIT, NOK, "");
         return;
     }
     if (it->gameStatus == ONGAME){
