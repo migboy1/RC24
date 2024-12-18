@@ -280,6 +280,7 @@ void Server::handle_start(char *message){
         size_t time_left = it->max_playtime + it->start_sec - resultTime.first;
         if (it->gameStatus == ONGAME && time_left > 0 && it->restartGame == NO){
             protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, NOK);
+            printf("good");
             return;
         }
     }
@@ -290,6 +291,7 @@ void Server::handle_start(char *message){
     FILE * playerfile = fopen(playerfilepath, "w");
     if (!playerfile){
         protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, NOK);
+        printf("bad\n");
         return;
     }
 
