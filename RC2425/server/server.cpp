@@ -266,6 +266,7 @@ void Server::handle_start(char *message){
 
     if(!checkers::check_PLID(PLID) || !checkers::check_maxtime(max_playtime)){
         protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, ERR);
+        return;
     }
 
     auto resultTime = parsers::getTime(0);
