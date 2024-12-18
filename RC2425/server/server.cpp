@@ -656,7 +656,7 @@ void Server::handle_quit(char *message){
         sprintf(destinationFile, "GAMES/%s/%s_T.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
         rename(it->destinationfile, destinationFile);
         strcmp(it->destinationfile, destinationFile);
-        protocols::sendstatusUDP_QUIT(socketUDP, SERVER_COMMAND_QUIT, NOK, "");
+        protocols::sendstatusUDP_QUIT(socketUDP, SERVER_COMMAND_QUIT, ERR, "");
         return;
     }
     if (it->gameStatus == ONGAME){
