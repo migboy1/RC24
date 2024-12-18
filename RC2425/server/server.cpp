@@ -280,7 +280,7 @@ void Server::handle_start(char *message){
         size_t time_left = it->max_playtime + it->start_sec - resultTime.first;
         if (it->gameStatus == ONGAME && time_left > 0 && it->restartGame == NO){
             protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, NOK);
-            printf("good");
+            // printf("good");
             return;
         }
     }
@@ -291,7 +291,7 @@ void Server::handle_start(char *message){
     FILE * playerfile = fopen(playerfilepath, "w");
     if (!playerfile){
         protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, NOK);
-        printf("bad\n");
+        // printf("bad\n");
         return;
     }
 
@@ -354,7 +354,7 @@ void Server::handle_try(char * message){
 
     /*if the game is not ongame, return status NOK to client */
     if (it != user_list.end()){
-        if (it->mode == NONGAME){
+        if (it->gameStatus == NONGAME){
             protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, NOK, 0, 0, 0, "");
             return;
         }
@@ -417,7 +417,7 @@ void Server::handle_try(char * message){
 
     /*Check if the time is already exceeded*/
     if (sec_needed > it->max_playtime){
-        it->mode = NONGAME; /*the game is finished, not on game*/
+        it->gameStatus = NONGAME; /*the game is finished, not on game*/
         it->finishStatus = TIMEOUT;
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, ETM, 0, 0, 0, guess_secret_key); /* 0 means NULL*/
         sprintf(destinationFile, "GAMES/%s/%s_T.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
@@ -438,7 +438,7 @@ void Server::handle_try(char * message){
     
     /*no more attemps are available and not win yet*/
     if (n_trial == 8 && result.first != 4){
-        it->mode = NONGAME;
+        it->gameStatus = NONGAME;
         it->finishStatus = LOSS;
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, ENT, 0, 0, 0, guess_secret_key);
         sprintf(destinationFile, "GAMES/%s/%s_F.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
@@ -450,7 +450,7 @@ void Server::handle_try(char * message){
 
     /*While WIN the GAME */
     if (result.first == 4){
-        it->mode = NONGAME;
+        it->gameStatus = NONGAME;
         it->finishStatus = WIN;
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, OK, n_trial, result.first , result.second, "");
         sprintf(destinationFile, "GAMES/%s/%s_W.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
@@ -701,7 +701,7 @@ void Server::handle_dbug(char *message){
         fclose(playerfile);
         return;
     }
-    if (it->mode == NONGAME){
+    if (it->gameStatus == NONGAME){
         it->secret_key = secret_key;
         it->n_trial = 1;
         it->start_sec = resultTime.first;
