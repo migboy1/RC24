@@ -686,6 +686,7 @@ void Server::handle_quit(char *message){
         }
         sprintf(destinationFile, "GAMES/%s/%s_Q.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
         rename(it->destinationfile, destinationFile);
+        strcpy(it->destinationfile, destinationFile);
         protocols::sendstatusUDP_QUIT(socketUDP, SERVER_COMMAND_QUIT, OK, it->secret_key);
         return;
     }
