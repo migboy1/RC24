@@ -59,9 +59,6 @@ void Server::print_verbose(SOCKET * s, std::string request, std::string PLID){
     if (!PLID.empty()){
         fprintf(stdout, "%s ", PLID.c_str());
     }
-    if (!request.empty()){
-        fprintf(stdout, "%s ", request.c_str());
-    }
     fprintf(stdout, "\n");
 }
 

@@ -123,10 +123,10 @@ void User::Start(string input){
             }
             else if (r_status == NOK){
                 printf("Player has ongoing game.\n");
-                if (_uid != ""){
-                    return;
-                }
-                _uid = "";
+                // if (_uid != ""){
+                //     return;
+                // }
+                // _uid = "";
             }
             else if (r_status == ERR){
                 printf("ERROR! Please check the format of insert\n");
