@@ -280,7 +280,6 @@ void Server::handle_start(char *message){
         size_t time_left = it->max_playtime + it->start_sec - resultTime.first;
         if (it->gameStatus == ONGAME && time_left > 0 && it->restartGame == NO){
             protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, NOK);
-            printf("good");
             return;
         }
     }
@@ -289,11 +288,6 @@ void Server::handle_start(char *message){
     char playerfilepath[MAX_PATHNAME] = {'\0'};
     sprintf(playerfilepath, "GAMES/GAME_%d.txt", PLID); 
     FILE * playerfile = fopen(playerfilepath, "w");
-    if (!playerfile){
-        protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, NOK);
-        printf("bad\n");
-        return;
-    }
 
     /* Create 4 colors secret key */
     std::string secret_key;
