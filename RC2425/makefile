@@ -1,20 +1,22 @@
 CC     = g++
-# -Wall  - this flag is used to turn on most compiler warnings
-CFLAGS = -Wall
+CFLAGS = -Wall -std=c++11
 
 .PHONY: all clean
 
-all: user server
+# Main targets
+all: player GS
 
-user: client/client.cpp utils.o
+# Player executable
+player: client/client.cpp utils.o
 	$(CC) $(CFLAGS) -o player client/client.cpp utils.o
 
-server: server/server.cpp utils.o
+# Server executable
+GS: server/server.cpp utils.o 
 	$(CC) $(CFLAGS) -o GS server/server.cpp utils.o
 
-utils.o: utils.cpp const.hpp
-	$(CC) $(CFLAGS) -c -o utils.o utils.cpp
+# Shared utilities
+utils.o: utils.cpp utils.hpp const.hpp
+	$(CC) $(CFLAGS) -c utils.cpp -o utils.o
 
-	
 clean:
-	rm -f player *.o
+	rm -f player GS *.o
