@@ -686,6 +686,7 @@ void Server::handle_dbug(char *message){
 
     iss >> command >> PLID >> max_playtime >> s1 >> s2 >> s3 >> s4;
 
+    printf("haha\n");
     if(!checkers::check_maxtime(max_playtime) || !checkers::check_PLID(PLID) || !checkers::check_secretkey(s1, s2, s3, s4)){
         protocols::sendstatusUDP_DBUG(socketUDP, SERVER_COMMAND_DEBUG, ERR);
         return;
@@ -701,7 +702,6 @@ void Server::handle_dbug(char *message){
     sprintf(playerfilepath, "GAMES/GAME_%d.txt", PLID); 
     FILE * playerfile = fopen(playerfilepath, "w");
     if (it == user_list.end()){
-        printf("haha\n");
         USERLIST new_user = {PLID, secret_key, 01, resultTime.first, std::vector<std::string>(8, "") , max_playtime, ONGAME, "P", "", "", ""};
         strncpy(new_user.destinationfile, playerfilepath, MAX_PATHNAME);
         new_user.destinationfile[MAX_PATHNAME - 1] = '\0';
