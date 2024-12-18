@@ -264,10 +264,6 @@ void Server::handle_start(char *message){
 
     iss >> command >> PLID >> max_playtime;
 
-    /*if more input exceeded*/
-    if (iss >> std::ws && !iss.eof()){
-        protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, ERR);
-    }
     if(!checkers::check_PLID(PLID) || !checkers::check_maxtime(max_playtime)){
         protocols::sendstatusUDP_START(socketUDP, SERVER_COMMAND_START, ERR);
     }
@@ -344,11 +340,6 @@ void Server::handle_try(char * message){
     std::istringstream iss(message);
 
     iss >> command >> PLID >> secret1 >> secret2 >> secret3 >> secret4 >> n_trial;
-    
-    if (iss >> std::ws && !iss.eof()){
-        protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, ERR, 0, 0, 0, "");
-        return;
-    }
 
     if (checkers::check_secretkey(secret1, secret2, secret3, secret4) == 0){
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, ERR, 0, 0, 0, "");
@@ -680,10 +671,6 @@ void Server::handle_dbug(char *message){
 
     iss >> command >> PLID >> max_playtime >> s1 >> s2 >> s3 >> s4;
 
-    if(iss >> std::ws && !iss.eof()){
-        protocols::sendstatusUDP_DBUG(socketUDP, SERVER_COMMAND_DEBUG, ERR);
-        return;
-    }
 
     if(!checkers::check_maxtime(max_playtime) || !checkers::check_PLID(PLID) || !checkers::check_secretkey(s1, s2, s3, s4) ){
         protocols::sendstatusUDP_DBUG(socketUDP, SERVER_COMMAND_DEBUG, ERR);
