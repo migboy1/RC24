@@ -443,7 +443,7 @@ void Server::handle_try(char * message){
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, ENT, 0, 0, 0, guess_secret_key);
         sprintf(destinationFile, "GAMES/%s/%s_F.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
         fclose(playerfile);
-        strcmp(it->destinationfile, destinationFile);
+        strcpy(it->destinationfile, destinationFile);
         rename(playerfilepath, destinationFile);
         return;
     }
@@ -455,7 +455,7 @@ void Server::handle_try(char * message){
         printf("haah\n");
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, OK, n_trial, result.first , result.second, "");
         sprintf(destinationFile, "GAMES/%s/%s_W.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
-        strcmp(it->destinationfile, destinationFile);
+        strcpy(it->destinationfile, destinationFile);
         fclose(playerfile);
         rename(playerfilepath, destinationFile);
         printf("ggg\n");
@@ -503,6 +503,8 @@ void Server::handle_showtrails(char *message, int client_fd){
     }
     char buffer_line[MAX_BUFF_SIZE];
     char buffer[MAX_BUFF_SIZE] = {'\0'};
+
+    std::cout << it->destinationfile << std::endl;
     FILE * playerfile = fopen(it->destinationfile, "r");
     if (playerfile == NULL) {
         perror("Failed to open file");
@@ -537,17 +539,17 @@ void Server::handle_showtrails(char *message, int client_fd){
             fwrite(buffer, sizeof(char), strlen(buffer), summaryFile);
             if (time_left <= 0){
                 it->gameStatus = NONGAME;
-
                 char destinationFile[MAX_PATHNAME] = {'\0'};
                 char destinationDir[MAX_DIRNAME];
                 sprintf(destinationDir, "GAMES/%d",PLID);
                 if (!exists(destinationDir)) {
                     create_dir(destinationDir);
                 }
+
                 it->finishStatus = TIMEOUT;
                 sprintf(destinationFile, "GAMES/%s/%s_T.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
                 rename(it->destinationfile, destinationFile);
-                strcmp(it->destinationfile, destinationFile);
+                strcpy(it->destinationfile, destinationFile);
                 
                 if(it->mode == "P"){
                     sprintf(buffer, "Mode: PLAY     Secret code:%s\n\n", it->secret_key.c_str());
@@ -668,7 +670,7 @@ void Server::handle_quit(char *message){
         it->finishStatus = TIMEOUT;
         sprintf(destinationFile, "GAMES/%s/%s_T.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
         rename(it->destinationfile, destinationFile);
-        strcmp(it->destinationfile, destinationFile);
+        strcpy(it->destinationfile, destinationFile);
         protocols::sendstatusUDP_QUIT(socketUDP, SERVER_COMMAND_QUIT, NOK, "");
         return;
     }

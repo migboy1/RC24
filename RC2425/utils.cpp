@@ -310,6 +310,7 @@ namespace protocols{
         fclose(file);
 
         buffer = command + " " + status + " "+ summaryFileName + " " + to_string(fileStat.st_size)  + " " + buffer_file +  "\n";
+        std::cout << buffer;
 
         if (sendTCP_SERVER(clientfd, buffer, buffer.length()) == FAIL){
             return FAIL;

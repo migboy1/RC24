@@ -241,7 +241,7 @@ void User::Show_trials(){
             printf("received trials file: \"%s\" (%d bytes)\n", fileName.c_str(), Fsize);
         }
         else if(r_status == "FIN"){
-            iss >> r_status >> fileName;
+            iss >> fileName >> Fsize ;
             getline(iss >> ws, Fdata, '\0');
             printf("received trials file: \"%s\" (%d bytes)\n", fileName.c_str(), Fsize);
 
