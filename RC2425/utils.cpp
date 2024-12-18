@@ -247,7 +247,7 @@ namespace protocols{
         else if(status == ERR || status == NOK || status == DUP || status == INV){
             buffer = command + " " + status + "\n";
         }
-        else if(status == ENT){
+        else if(status == ENT || status == ETM){
             char s1, s2, s3, s4;
             sscanf(secret_key.c_str(), "%c%c%c%c", &s1, &s2, &s3, &s4);
             buffer = command + " " + status + " " + s1  + " " + s2 + " " + s3 + " " + s4 + "\n";
