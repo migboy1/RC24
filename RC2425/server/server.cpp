@@ -714,6 +714,7 @@ void Server::handle_dbug(char *message){
         return;
     }
     std::cout << it->gameStatus << std::endl;
+    
     if (it->gameStatus == NONGAME){
         it->secret_key = secret_key;
         it->n_trial = 1;
