@@ -348,11 +348,12 @@ void User::Quit(){
     istringstream iss(answer);
     std::string r_command, r_status, secret1, secret2, secret3, secret4;
 
-    iss >> r_command >> r_status >> secret1 >> secret2 >> secret3 >> secret4;
+    iss >> r_command >> r_status ;
 
 
     if (r_command == SERVER_COMMAND_QUIT){
         if (r_status == OK){
+            iss >> secret1 >> secret2 >> secret3 >> secret4;
             printf("The game is terminated. This is the secret key: %s %s %s %s\n", secret1.c_str(), secret2.c_str(), secret3.c_str(), secret4.c_str());
         }
         else if (r_status == NOK){
