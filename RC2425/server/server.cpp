@@ -358,7 +358,6 @@ void Server::handle_try(char * message){
     int PLID;
     std::string command, secret1 ,secret2, secret3, secret4;
     int n_trial = 0;
-    printf("%s\n", message);
 
     std::istringstream iss(message);
 
@@ -475,20 +474,17 @@ void Server::handle_try(char * message){
     if (result.first == 4){
         it->gameStatus = NONGAME;
         it->finishStatus = WIN;
-        printf("haah\n");
         protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, OK, n_trial, result.first , result.second, "");
         sprintf(destinationFile, "GAMES/%s/%s_W.txt", std::to_string(PLID).c_str(), resultTime.second.c_str());
         strcpy(it->destinationfile, destinationFile);
         fclose(playerfile);
         rename(playerfilepath, destinationFile);
-        printf("ggg\n");
         playerfile = fopen(destinationFile, "a");
         char buffer[MAX_BUFF_SIZE] = {'\0'};
         resultTime = parsers::getTime(1);
         sprintf(buffer, "%s %ld\n", resultTime.second.c_str(), sec_needed);
         nwritten = fwrite(buffer, sizeof(char), strlen(buffer), playerfile);
         score_dir(PLID, n_trial, resultTime.second, it->secret_key, it->mode);
-        printf("hh\n");
         return;
     }
     protocols::sendstatusUDP_TRY(socketUDP, SERVER_COMMAND_TRY, OK, n_trial, result.first , result.second, "");
@@ -607,7 +603,6 @@ void Server::handle_showtrails(char *message, int client_fd){
 
     //if the game is finished, define 4 different finish way
     else if(it->gameStatus == NONGAME){
-        printf("haa\n");
         if(it->finishStatus == TIMEOUT){
             sprintf(buffer, "   Termination: TIMEOUT at %s, Duration: %d\n", resultTime.second.c_str(), it->max_playtime);
         }

@@ -240,7 +240,6 @@ namespace protocols{
         std::string buffer;
         if(status == OK){
             buffer = command + " " + OK + " " + std::to_string(n_trial) + " " + std::to_string(nB) + " " + std::to_string(nW) + "\n";
-            printf("%s\n", buffer.c_str());
         }
 
         else if(status == ERR || status == NOK || status == DUP || status == INV){
@@ -309,7 +308,6 @@ namespace protocols{
         fclose(file);
 
         buffer = command + " " + status + " "+ summaryFileName + " " + std::to_string(fileStat.st_size)  + " " + buffer_file +  "\n";
-        std::cout << buffer;
 
         if (sendTCP_SERVER(clientfd, buffer, buffer.length()) == FAIL){
             return FAIL;
