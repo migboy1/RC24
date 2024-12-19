@@ -1,3 +1,0 @@
-start 100001 600
-quit
-exit

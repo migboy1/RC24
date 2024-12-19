@@ -541,12 +541,6 @@ void Server::handle_showtrails(char *message, int client_fd){
     char secret_key[MAX_SECRET_SIZE] = {'\0'};
     int  year, month, day, hour, min, sec, nB, nW, used_sec, fulltime;
     time_t max_playtime;
-
-    char destinationDir[MAX_DIRNAME];
-    sprintf(destinationDir, "./STATE");
-    if (!exists(destinationDir)) {
-        create_dir(destinationDir);
-    }
     
     /* CREAT SUMMARY FILE TO PLAYER*/
     char summaryFilePath[MAX_PATHNAME] = {'\0'};
@@ -641,6 +635,13 @@ void Server::handle_scoreboard(char *message, int client_fd){
 
     SCORELIST scores;
     memset(&scores, 0, sizeof(SCORELIST));
+
+    char destinationDir[MAX_DIRNAME];
+    sprintf(destinationDir, "./SCORES");
+    if (!exists(destinationDir)) {
+        create_dir(destinationDir);
+    }
+    
     int n_result = FindTopScores(&scores);
 
     if (n_result == 0){
@@ -649,6 +650,9 @@ void Server::handle_scoreboard(char *message, int client_fd){
     }
     int i;
     n_scoreboard ++;
+
+    
+    
     char scoreFileName[MAX_FILENAME] = {'\0'};
     char scoreFilePath[MAX_PATHNAME] = {'\0'};
     sprintf(scoreFileName, "TOPSCORES_%06d.txt", n_scoreboard);
