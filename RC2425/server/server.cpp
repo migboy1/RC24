@@ -641,7 +641,7 @@ void Server::handle_scoreboard(char *message, int client_fd){
     if (!exists(destinationDir)) {
         create_dir(destinationDir);
     }
-    
+
     int n_result = FindTopScores(&scores);
 
     if (n_result == 0){
@@ -760,7 +760,7 @@ void Server::handle_dbug(char *message){
     auto resultTime = parsers::getTime(0);
 
     char destinationDir[MAX_DIRNAME];
-    sprintf(destinationDir, "GAMES/%d",PLID);
+    sprintf(destinationDir, "./GAMES");
     if (!exists(destinationDir)) {
         create_dir(destinationDir);
     }

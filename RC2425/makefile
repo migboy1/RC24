@@ -19,6 +19,6 @@ utils.o: utils.cpp utils.hpp const.hpp
 	$(CC) $(CFLAGS) -c utils.cpp -o utils.o
 
 clean:
-	rm -f player GS *.o
-	rm -r SCORES
-	rm -r GAMES
+	-rm -f player GS *.o
+	-rm -r SCORES
+	-rm -r GAMES
