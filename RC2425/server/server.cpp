@@ -527,7 +527,6 @@ void Server::handle_showtrails(char *message, int client_fd){
     char buffer_line[MAX_BUFF_SIZE];
     char buffer[MAX_BUFF_SIZE] = {'\0'};
 
-    std::cout << it->destinationfile << std::endl;
     FILE * playerfile = fopen(it->destinationfile, "r");
     if (playerfile == NULL) {
         perror("Failed to open file");
