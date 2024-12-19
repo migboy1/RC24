@@ -755,6 +755,12 @@ void Server::handle_dbug(char *message){
     std::string secret_key =s1 + s2 + s3 + s4; 
     auto resultTime = parsers::getTime(0);
 
+    char destinationDir[MAX_DIRNAME];
+    sprintf(destinationDir, "GAMES/%d",PLID);
+    if (!exists(destinationDir)) {
+        create_dir(destinationDir);
+    }
+
     char playerfilepath[MAX_PATHNAME] = {'\0'};
     sprintf(playerfilepath, "GAMES/GAME_%d.txt", PLID); 
     FILE * playerfile = fopen(playerfilepath, "w");
